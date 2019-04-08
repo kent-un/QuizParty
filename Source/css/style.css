@@ -1,0 +1,54 @@
+.navbar-light .navbar-toggler{
+    border-color:white;
+}
+.bg-light{
+    border:none;
+}
+.division{
+    margin-left:5%;
+    font-size: 2em;
+    font-family: 'Raleway', sans-serif;
+    font-weight:300;
+}
+.catIcon{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+.rondIcon{
+    width: 50px;
+    height: 50px;
+    display:flex;
+    justify-content: space-around;
+    border-radius: 50%;
+    box-shadow: 0px 5px 8px -1px rgba(150,150,150,0.79);
+    margin-bottom: 5%;
+}
+.rondIcon:active{
+    box-shadow: none;
+}
+.icon{
+    width: 30px;
+    height:30px;
+    margin:auto;
+}
+.subtitle{
+    font-size:0.9em;
+    font-family: 'Raleway';
+    font-weight: 300;
+}
+button{
+    border:none;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    overflow:hidden;
+    outline:none;
+    cursor: pointer;
+}
+.card{
+    margin-left: 5%;
+    margin-right: 5%;
+    margin: 0 auto; /* Added */
+    float: none; /* Added */
+    margin-bottom: 10px; /* Added */
+}
