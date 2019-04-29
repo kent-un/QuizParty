@@ -86,7 +86,7 @@
             $db = new connectionDb();
             $numberQuestions = $_POST['numberQuestions'];
             $idQuestionnaire = $_POST['idQuestionnaire'];
-            for($x=1 ; $x<=$numberQuestions ; $x++){
+            for($x=1 ; $x<=($numberQuestions) ; $x++){
 
                 $check=$_POST['check'.$x];
                 $question[$x]=$_POST['question'.$x];
@@ -105,7 +105,7 @@
                         "bonneRep" => $bonneRep[$y]
                     ); 
                 }
-                $formattedReponses[$y] = json_encode($arrayRep);
+                $formattedReponses[$y] = json_encode($arrayRep, JSON_UNESCAPED_UNICODE);
                 var_dump($formattedReponses);
                 echo '<hr>';
                 $req=$db->db->prepare('INSERT INTO question(question, choix, idQuestionnaire) VALUES (:question, :choix, :idQuestionnaire)');
@@ -120,21 +120,16 @@
             $req->execute();
             $titreQuest = $req->fetch();
 
-            $req2= $db->db->prepare('SELECT choix FROM question WHERE idQuestionnaire = '.$idQuestionnaire);
+            $req2= $db->db->prepare('SELECT * FROM question WHERE idQuestionnaire = '.$idQuestionnaire);
             $req2->execute();
             while($donnees = $req2->fetch()){
-                $reponses[]=$donnees['choix'];
-            }
-            $i=0;
-            for($x=4; $x<=(count($reponses)); $x++){
-                $decodeRep[$i]= json_decode($reponses[$x], true);
-                $i++;
+                $reponses[]=json_decode($donnees['choix'], true);
             }
 
             $req3=$db->db->prepare('SELECT question FROM question WHERE idQuestionnaire ='.$idQuestionnaire);
             $req3->execute();
-            while($donnees=$req3->fetch()){
-                $questions[]=$donnees['question'];
+            while($donneesR=$req3->fetch()){
+                $questions[]=$donneesR['question'];
             }
            
             
@@ -144,16 +139,16 @@
             <div class="card-body">
                 <h4 class="card-title">'.$titreQuest['titreQuestionnaire'].'</h4>
                 <p class="card-text">';
-            for($x=0 ; $x<=($numberQuestions-1) ; $x++){
+            for($x=0 ; $x<=((count($questions))-1) ; $x++){
                 echo ($x+1).': ';
                 echo $questions[$x];
                 echo '<hr><ul>';
-                for($y=1; $y<=(count($decodeRep[$x+1])); $y++){
-                    if($decodeRep[$x+1][$y]['bonneRep']==true){
-                    echo '<li>'.$decodeRep[$x+1][$y]['intitulé'].' <span class="badge badge-pill badge-success">Bonne réponse</span>
+                for($y=0; $y<=((count($reponses[$x]))-1); $y++){
+                    if($reponses[$x][$y+1]['bonneRep']==True){
+                    echo '<li>'.$reponses[$x][$y+1]['intitulé'].' <span class="badge badge-pill badge-success">Bonne réponse</span>
                     </li>';
                     }else{
-                    echo '<li>'.$decodeRep[$x+1][$y]['intitulé'].'</li>';
+                    echo '<li>'.$reponses[$x][$y+1]['intitulé'].'</li>';
                     }
 
                 }

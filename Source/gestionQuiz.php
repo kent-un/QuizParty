@@ -17,11 +17,16 @@
     </header>
     <main>
     <?php
+    // Vérifier si l'utilisateur est connecté
     if(isset($_SESSION['idUtilisateur'])){
+        // Intégration des classes objets pour la connexion à la DB et les catégories
+        require_once 'class/connectionDB.php';
+        require_once 'class/categorie.php';
+        // Conditions pour vérifier si l'action que l'utilisateur veut effectuer
         if($_GET['gestion']==1){
-            require_once 'class/connectionDB.php';
-            require_once 'class/categorie.php';
+            // Connexion à la base de donnée
             $db = new connectionDb();
+            // Récupération des ID et des noms de catégories
             $reponse = $db->db->prepare('SELECT idCategorie, nomCategorie FROM categorie');
             $reponse->execute();
             echo '<div class="card text-white bg-dark mb-3" style="max-width: 20rem;">
@@ -52,10 +57,61 @@
                     </div>
                 </div>';
         }else if($_GET['gestion']==2){
-            echo 'prout numéro 2';
+            require_once 'class/previewGestion.php';
+            $db = new connectionDb();
+            if($_SESSION['statut']==1){
+                $utilisateur = $_SESSION['idUtilisateur'];
+                $reponse = $db->db->prepare("SELECT * FROM questionnaire NATURAL JOIN categorie WHERE idUtilisateur =".$utilisateur);
+                $reponse->execute();
+                while($donnees = $reponse->fetch()){
+                    $questions = $db->db->prepare("SELECT COUNT(question) AS numbQuest FROM question WHERE idQuestionnaire=".$donnees['idQuestionnaire']);
+                    $questions->execute();
+                    $numbQuest = $questions->fetch();
+                    $preview[] = new previewGestion($donnees['titreQuestionnaire'], $numbQuest['numbQuest'], $donnees['couleur'], $donnees['idQuestionnaire']);
+                }
+                if(($reponse->rowCount())==0){
+                    echo '<div class="alert alert-dismissible alert-warning">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <p class="mb-0">Vous n\'avez pas encore publié de quiz</p>
+                  </div>'; 
+                }
+                    
+            }else{
+                $reponse = $db->db->prepare("SELECT * FROM questionnaire NATURAL JOIN categorie");
+                $reponse->execute();
+                while($donnees = $reponse->fetch()){
+                    $questions = $db->db->prepare("SELECT COUNT(question) AS numbQuest FROM question WHERE idQuestionnaire=".$donnees['idQuestionnaire']);
+                    $questions->execute();
+                    $numbQuest = $questions->fetch();
+                    $preview[] = new previewGestion($donnees['titreQuestionnaire'], $numbQuest['numbQuest'], $donnees['couleur'], $donnees['idQuestionnaire']);
+            }}
+        }else if($_GET['gestion']==3){
+            require_once 'class/previewAdmin.php';
+            $db = new connectionDb();
+            $reponse = $db->db->prepare("SELECT * FROM questionnaire NATURAL JOIN categorie WHERE etat = 0");
+            $reponse->execute();
+            echo '<h6>Questionnaires en attente de validation</h6>';
+            while($donnees = $reponse->fetch()){
+                $preview[] = new previewAdmin($donnees['titreQuestionnaire'], $donnees['couleur'], $donnees['idQuestionnaire'], $donnees['nomCategorie'], $donnees['dateQuestionnaire']);
+            }
+            echo '<h6>Questionnaires archivés</h6>';
+            $reponse = $db->db->prepare("SELECT * FROM questionnaire NATURAL JOIN categorie WHERE etat = 1");
+            $reponse->execute();
+            while($donnees = $reponse->fetch()){
+                $preview[] = new previewAdmin($donnees['titreQuestionnaire'], 'DCDCDC', $donnees['idQuestionnaire'], $donnees['nomCategorie'], $donnees['dateQuestionnaire']);
+            }
         }
     }else{
         echo '<a href="index.php"><button type="button" class="btn btn-primary btn-lg btn-block">Retourner à l\'accueil</button></a>';
+    }
+    if(isset($_POST['publier'])){
+        $publier = $db->db->prepare("UPDATE questionnaire SET etat = 2 WHERE idQuestionnaire =".$_POST['idQuestionnaire']);
+        $publier->execute();
+
+    }
+    else if(isset($_POST['archiver'])){
+        $archiver = $db->db->prepare("UPDATE questionnaire SET etat = 1 WHERE idQuestionnaire =".$_POST['idQuestionnaire']);
+        $archiver->execute();
     }
     ?>
     </main>

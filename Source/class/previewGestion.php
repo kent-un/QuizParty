@@ -1,6 +1,6 @@
 <?php
 
-class preview{
+class previewGestion{
     private $titleQuiz;
     private $numberQuest; 
     private $color;
@@ -20,7 +20,7 @@ class preview{
         $req->execute();
         $nomcategorie = $req->fetch();
         echo '
-        <a href="questionnaire.php?1='.$this->color.'&2='.$nomcategorie[0].'&3='.$this->numberQuest.'&4='.$this->idQuestionnaire.'&5='.$this->titleQuiz.'">
+        <a href="modifier.php?id='.$this->idQuestionnaire.'&titre='.$this->titleQuiz.'">
         <div class="card mb-3" style="color:white; max-width: 20rem; background-color:#'.$this->color.';">
             <div class="card-body">
             '.$this->titleQuiz.' 

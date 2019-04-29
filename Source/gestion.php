@@ -21,7 +21,7 @@
         $idQuestionnaire=$_POST['idQuestionnaire'];
         require_once 'class/connectionDB.php';
         $db = new connectionDb();
-        $req = $db->db->prepare('UPDATE questionnaire SET etat=1 WHERE idQuestionnaire ='.$idQuestionnaire);
+        $req = $db->db->prepare('UPDATE questionnaire SET etat=0 WHERE idQuestionnaire ='.$idQuestionnaire);
         $req->execute(); 
         echo '
         <div class="alert alert-dismissible alert-success">
@@ -36,7 +36,6 @@
         <div class="card-body">
         <a href="gestionQuiz.php?gestion=1"><button type="button" class="btn btn-primary btn-lg btn-block">Créer un quiz</button></a>
         <a href="gestionQuiz.php?gestion=2"><button type="button" class="btn btn-primary btn-lg btn-block">Gérer un quiz</button></a>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Consulter les quiz créés</button>
         </div>
       </div>';
     }else if(isset($_SESSION['idUtilisateur']) && $_SESSION['statut']==2){
@@ -46,8 +45,8 @@
         <div class="card-body">
         <a href="gestionQuiz.php?gestion=1"><button type="button" class="btn btn-primary btn-lg btn-block">Créer un quiz</button></a>
         <a href="gestionQuiz.php?gestion=2"><button type="button" class="btn btn-primary btn-lg btn-block">Gérer un quiz</button></a>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Consulter les quiz</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Gestion des membres</button>
+        <a href="gestionQuiz.php?gestion=3"><button type="button" class="btn btn-primary btn-lg btn-block">Consulter les quiz</button></a>
+        <a href="membres.php"><button type="button" class="btn btn-primary btn-lg btn-block">Gestion des membres</button></a>
         </div>
       </div>';
     }else{

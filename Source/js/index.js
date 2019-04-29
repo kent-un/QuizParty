@@ -6,4 +6,6 @@ function addReponse(x, y) {
     $('#addAnswer'+x).attr("onclick", "addReponse("+x+","+y+")");
 };
 
-$('.carousel').carousel('pause');
+$('.carousel').carousel({
+    interval:false
+});

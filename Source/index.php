@@ -22,13 +22,18 @@
         <?php 
         require_once 'class/connectionDB.php';
         require_once 'class/categorie.php';
+
         $db = new connectionDb();
+
         $reponse = $db->db->prepare('SELECT * FROM categorie');
         $reponse->execute();
+
         echo '<div class="container"><div class="row">';
+
         while($donnees = $reponse->fetch()){
-            $categories[] = new categorie($donnees['nomCategorie'], $donnees['couleur'], $donnees['icon']);
+            $categories[] = new categorie($donnees['nomCategorie'], $donnees['couleur'], $donnees['icon'], $donnees['idCategorie']);
         }
+        
         echo '</div></div>';
         ?>
         <p class="division">
@@ -63,9 +68,6 @@
             $preview[$x]= new preview($previewTitre[$x], $previewNb[$x]['numberQuest'], $previewColor[$x]['couleur'], $previewId[$x]);
         }
         ?>
-        <p class="division">
-            Mieux notés
-        </p>
     </main>
     <footer>
 

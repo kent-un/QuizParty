@@ -52,3 +52,9 @@ button{
     float: none; /* Added */
     margin-bottom: 10px; /* Added */
 }
+h2{
+    text-align: center;
+}
+a:hover{
+    text-decoration: none;
+}
